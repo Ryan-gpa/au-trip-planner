@@ -4,9 +4,18 @@ This plugin works out of the box with zero setup — Phase 1 (flight/hotel/trans
 
 | Category | What it upgrades | Setup | Status |
 |---|---|---|---|
-| Duffel (flights) | Live flight offers + real booking, gated on your explicit confirmation | Create a Duffel developer account, get a sandbox API key, later a live key + payment method | Not yet built — Phase 2 |
+| Duffel (flights) | Live flight offers + real booking, gated on your explicit confirmation | See below | **Built — Phase 2** |
 | Uber for Business (ground transport) | Real ride booking, gated on your explicit confirmation | Create a Uber for Business org account and API credentials | Not yet built — Phase 3 |
 | State transit open data | Official real-time train/bus/ferry data instead of general web search, for the ground-transport leg | Free self-serve signup, no business verification needed | Not yet built — see table below |
+
+## Duffel (Phase 2) — setup
+
+1. Create a Duffel account at [duffel.com](https://duffel.com), pick your team/workspace.
+2. Go to `https://app.duffel.com/<your-team-id>/test/tokens` (or find "Access tokens" under your workspace's developer/API section — dashboard navigation shifts over time) and create a **test mode** token. It starts with `duffel_test_`.
+3. Copy `.env.example` to `.env` in the repo root and set `DUFFEL_ACCESS_TOKEN=duffel_test_...`. `.env` is gitignored — never commit it.
+4. That's it — `scripts/duffel_flights.py` picks it up automatically. Test it: `python scripts/duffel_flights.py search SYD MEL 2026-08-01 2026-08-05 1`
+
+**Test mode vs live mode:** a `duffel_test_` token returns fictional sandbox offers — safe to experiment with, but not real fares, and "booking" one doesn't book anything real. When ready to go live, generate a `duffel_live_...` token from the same dashboard (Duffel will ask for a payment method and may require additional verification for live flight booking), and swap it into `.env`. The skill checks the token prefix and adjusts behavior automatically — see `SKILL.md` Step 6.
 
 ## State transit open data (Phase 1B)
 

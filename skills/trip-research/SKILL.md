@@ -60,3 +60,14 @@ Build an Artifact (see the Artifact tool) with one section per leg:
 ## Step 5 — Close clearly
 
 State plainly that these are researched recommendations for the user to book manually. If flight or ride booking has been configured (Duffel / Uber for Business — see README), mention that a booking can be triggered but only ever on an explicit instruction naming the specific option (e.g. "book flight option 2") — never proceed to book without that.
+
+## Step 6 — Flight booking (optional, requires Duffel)
+
+Check for `DUFFEL_ACCESS_TOKEN` (in `.env` next to the repo root, or the environment). If it's not set, skip this step entirely — Step 5's close is the end of the flow.
+
+If it is set, run `python scripts/duffel_flights.py search <ORIGIN_IATA> <DEST_IATA> <depart_date> [<return_date>] [passengers]` to check the token's mode:
+
+- **`duffel_test_...` (sandbox/test mode)**: Duffel's offers here are fictional test data, not real fares — do not use them for the research comparison in Step 3/4, and do not present them as real prices. Their only purpose right now is proving the booking mechanic works safely with zero financial risk. If the user asks to test booking, or asks to book a flight while only a test token is configured, run the search, show the returned test offers clearly labeled "TEST MODE — not a real flight," and only call `python scripts/duffel_flights.py book <offer_id> <given_name> <family_name> <born_on YYYY-MM-DD> <gender M|F> <email> <phone>` after the user explicitly confirms which test offer to "book." State clearly afterward that nothing real was booked.
+- **`duffel_live_...` (live mode)**: Duffel's search results are real live fares — at that point, prefer them over the web-search estimates in Step 3 for the flights leg (they're more accurate: real-time pricing and availability straight from the airline). Never call `book` on a live token without the user explicitly naming the specific offer to book, and always confirm passenger details (full legal name, date of birth, gender, contact info) before booking — get these from the user if not already known, never guess or reuse placeholder data for a real booking.
+
+Either way, `book` is never called automatically as part of Step 4/5 — only on a follow-up message that explicitly instructs booking a named option.

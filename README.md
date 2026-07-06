@@ -40,11 +40,23 @@ Works standalone with zero setup. Optionally supercharged with the connectors in
 
 | What You Can Do | Standalone | Supercharged With |
 |---|---|---|
-| Research flights | Live web search | — |
-| Book a flight | Not available | Duffel (Phase 2) |
+| Research flights | Live web search | Duffel live mode (once you're past sandbox) replaces estimates with real fares |
+| Book a flight | Not available | **Duffel — built.** See setup below. Sandbox by default (fake test bookings, zero risk); switch to a live token when ready to book for real |
 | Research ground transport | Live web search | State transit open data (Phase 1B) — official real-time data for Sydney/Melbourne/Brisbane |
 | Book a ride | Not available | Uber for Business (Phase 3) |
 | Research hotels | Live web search | — (no realistic booking-API path for individuals/small businesses — see CONNECTORS.md) |
+
+### Setting up Duffel (flight booking)
+
+See [CONNECTORS.md](CONNECTORS.md#duffel-phase-2--setup) for the full walkthrough. Short version:
+
+```bash
+cp .env.example .env
+# edit .env, set DUFFEL_ACCESS_TOKEN=duffel_test_... (get one at app.duffel.com)
+python scripts/duffel_flights.py search SYD MEL 2026-08-01 2026-08-05 1
+```
+
+A `duffel_test_` token is sandbox mode — safe to experiment with, no real flights or money involved. The skill only ever books on an explicit "book [option]" instruction, whether in test or live mode.
 
 ## Personalization
 
