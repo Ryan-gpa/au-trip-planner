@@ -71,3 +71,15 @@ If it is set, run `python scripts/duffel_flights.py search <ORIGIN_IATA> <DEST_I
 - **`duffel_live_...` (live mode)**: Duffel's search results are real live fares — at that point, prefer them over the web-search estimates in Step 3 for the flights leg (they're more accurate: real-time pricing and availability straight from the airline). Never call `book` on a live token without the user explicitly naming the specific offer to book, and always confirm passenger details (full legal name, date of birth, gender, contact info) before booking — get these from the user if not already known, never guess or reuse placeholder data for a real booking.
 
 Either way, `book` is never called automatically as part of Step 4/5 — only on a follow-up message that explicitly instructs booking a named option.
+
+## Step 7 — Hotel search and price-lock (optional, requires Nuitee Connect / LiteAPI)
+
+Check for `LITEAPI_SANDBOX_KEY` or `LITEAPI_LIVE_KEY` (in `.env` next to the repo root, or the environment). If neither is set, skip this step — the web-search hotel research from Step 3 is the end of the hotel leg.
+
+If a key is set, run `python scripts/liteapi_hotels.py search <CITY> <COUNTRY_CODE> <checkin> <checkout> [adults] [limit]` and prefer its results over the web-search estimates in Step 3/4 for the hotel leg — they're real, live prices and availability, not synthesized from search snippets.
+
+**Booking is not available yet, in either sandbox or live mode.** `liteapi_hotels.py` only implements `search` (find rooms) and `prebook` (lock in a rate, returns a `prebookId` — does not charge anything or reserve the room). Completing an actual reservation requires finishing payment through LiteAPI's own hosted payment flow (a browser-based widget, or an Account Credit Card / Wallet configured directly in their dashboard under Payments) — none of which this script can do on its own. If the user asks to book a hotel:
+
+1. Run `search`, then `prebook` on the chosen option — this is safe, locks in the price, and doesn't charge anything.
+2. Tell the user plainly that the reservation isn't finished — they need to complete payment on LiteAPI's side (or, once configured, this connector can be extended once we know which payment method they've set up).
+3. Never claim a hotel is booked when only `search`/`prebook` have run.

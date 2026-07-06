@@ -42,9 +42,10 @@ Works standalone with zero setup. Optionally supercharged with the connectors in
 |---|---|---|
 | Research flights | Live web search | Duffel live mode (once you're past sandbox) replaces estimates with real fares |
 | Book a flight | Not available | **Duffel — built.** See setup below. Sandbox by default (fake test bookings, zero risk); switch to a live token when ready to book for real |
+| Research hotels | Live web search | **Nuitee Connect / LiteAPI — search and price-lock built.** See setup below. Real hotel names/prices, not search estimates |
+| Book a hotel | Not available | Not yet — LiteAPI's search/prebook works, but completing a reservation needs their payment step finished on their end first (see CONNECTORS.md) |
 | Research ground transport | Live web search | State transit open data (Phase 1B) — official real-time data for Sydney/Melbourne/Brisbane |
 | Book a ride | Not available | Uber for Business (Phase 3) |
-| Research hotels | Live web search | — (no realistic booking-API path for individuals/small businesses — see CONNECTORS.md) |
 
 ### Setting up Duffel (flight booking)
 
@@ -57,6 +58,19 @@ python scripts/duffel_flights.py search SYD MEL 2026-08-01 2026-08-05 1
 ```
 
 A `duffel_test_` token is sandbox mode — safe to experiment with, no real flights or money involved. The skill only ever books on an explicit "book [option]" instruction, whether in test or live mode.
+
+### Setting up LiteAPI (hotel search + price-lock)
+
+See [CONNECTORS.md](CONNECTORS.md#nuitee-connect--liteapi-phase-2b--setup) for the full walkthrough. Short version:
+
+```bash
+cp .env.example .env
+# edit .env, set LITEAPI_SANDBOX_KEY=sand_... (get one at connect.nuitee.com — the SANDBOX KEY under
+# Developer tools > API Keys > Private API Keys, not the "Sandbox – Public Key")
+python scripts/liteapi_hotels.py search Melbourne AU 2026-08-01 2026-08-05 1
+```
+
+Real hotel data, zero cost to search or price-lock (`prebook`). Actually completing a booking isn't wired up yet — see CONNECTORS.md for why.
 
 ## Personalization
 
