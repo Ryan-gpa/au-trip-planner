@@ -1,0 +1,11 @@
+{
+  "name": "au-trip-planner",
+  "description": "Research and recommend flights, hotels, and ground transport for an Australian domestic business trip, with reviews.",
+  "version": "0.1.0",
+  "author": {
+    "name": "au-trip-planner contributors"
+  },
+  "license": "MIT",
+  "keywords": ["travel", "flights", "hotels", "business-travel", "australia"],
+  "skills": ["./skills/trip-research"]
+}

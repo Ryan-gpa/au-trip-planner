@@ -1,0 +1,87 @@
+<h2 class="sr-only">Form to research a business trip: origin, destination, dates, departure time, travelers, and meeting location</h2>
+
+<div style="display: flex; flex-direction: column; gap: 14px; max-width: 420px;">
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <div>
+      <label for="ap-origin" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">From</label>
+      <input id="ap-origin" type="text" placeholder="Sydney" style="width: 100%;" />
+    </div>
+    <div>
+      <label for="ap-destination" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">To</label>
+      <input id="ap-destination" type="text" placeholder="Melbourne" style="width: 100%;" />
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <div>
+      <label for="ap-depart" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">Depart</label>
+      <input id="ap-depart" type="date" style="width: 100%;" />
+    </div>
+    <div>
+      <label for="ap-return" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">Return</label>
+      <input id="ap-return" type="date" style="width: 100%;" />
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <div>
+      <label for="ap-time" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">Preferred departure time</label>
+      <select id="ap-time" style="width: 100%;">
+        <option value="">No preference</option>
+        <option value="early morning">Early morning</option>
+        <option value="morning">Morning</option>
+        <option value="afternoon">Afternoon</option>
+        <option value="evening">Evening</option>
+      </select>
+    </div>
+    <div>
+      <label for="ap-travelers" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">Travelers</label>
+      <input id="ap-travelers" type="number" min="1" value="1" style="width: 100%;" />
+    </div>
+  </div>
+
+  <div>
+    <label for="ap-meeting" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">Meeting location (optional)</label>
+    <input id="ap-meeting" type="text" placeholder="Collins St, CBD" style="width: 100%;" />
+  </div>
+
+  <p id="ap-error" style="display: none; font-size: 13px; color: var(--text-danger); margin: 0;">Add an origin, destination, and both dates.</p>
+
+  <button id="ap-submit" style="align-self: flex-start;">Research trip &#8599;</button>
+
+</div>
+
+<script>
+  var submitBtn = document.getElementById('ap-submit');
+  var errorEl = document.getElementById('ap-error');
+
+  submitBtn.addEventListener('click', function () {
+    var origin = document.getElementById('ap-origin').value.trim();
+    var destination = document.getElementById('ap-destination').value.trim();
+    var depart = document.getElementById('ap-depart').value;
+    var ret = document.getElementById('ap-return').value;
+    var time = document.getElementById('ap-time').value;
+    var travelers = document.getElementById('ap-travelers').value || '1';
+    var meeting = document.getElementById('ap-meeting').value.trim();
+
+    if (!origin || !destination || !depart || !ret) {
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+
+    var fmt = function (iso) {
+      var d = new Date(iso + 'T00:00:00');
+      return d.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    };
+
+    var parts = [];
+    parts.push('Business trip: ' + origin + ' to ' + destination + ', ' + fmt(depart) + ' to ' + fmt(ret) + '.');
+    if (time) parts.push('Prefer a ' + time + ' departure.');
+    if (Number(travelers) > 1) parts.push(travelers + ' travelers.');
+    if (meeting) parts.push('Meeting location: ' + meeting + '.');
+
+    sendPrompt(parts.join(' '));
+  });
+</script>
