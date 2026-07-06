@@ -1,0 +1,23 @@
+{
+  "name": "au-trip-planner",
+  "owner": {
+    "name": "au-trip-planner contributors"
+  },
+  "metadata": {
+    "description": "Research and recommend flights, hotels, and ground transport for an Australian domestic business trip, with reviews.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "au-trip-planner",
+      "source": "./",
+      "description": "Research and recommend flights, hotels, and ground transport for an Australian domestic business trip, with reviews.",
+      "version": "0.1.0",
+      "author": {
+        "name": "au-trip-planner contributors"
+      },
+      "keywords": ["travel", "flights", "hotels", "business-travel", "australia"],
+      "category": "productivity"
+    }
+  ]
+}
