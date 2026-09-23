@@ -1,0 +1,35 @@
+=== AU Trip Planner - local run ===
+Python: 3.13.13 (tags/v3.13.13:01104ce, Apr  7 2026, 20:10:37) [MSC v.1944 64 bit (ARM64)]
+Working directory: C:\Users\88hon\au-trip-planner
+
+Installing dependencies (first run takes a minute)...
+$ C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\python.exe -m pip install -r C:\Users\88hon\au-trip-planner\server\requirements.txt
+Requirement already satisfied: fastapi>=0.115.0 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from -r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 1)) (0.137.2)
+Requirement already satisfied: uvicorn>=0.30.6 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from -r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 2)) (0.49.0)
+Requirement already satisfied: pydantic>=2.10.0 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from -r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 3)) (2.13.4)
+Requirement already satisfied: starlette>=0.46.0 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from fastapi>=0.115.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: typing-extensions>=4.8.0 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from fastapi>=0.115.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 1)) (4.15.0)
+Requirement already satisfied: typing-inspection>=0.4.2 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from fastapi>=0.115.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 1)) (0.4.2)
+Requirement already satisfied: annotated-doc>=0.0.2 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from fastapi>=0.115.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 1)) (0.0.4)
+Requirement already satisfied: click>=7.0 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from uvicorn>=0.30.6->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 2)) (8.4.1)
+Requirement already satisfied: h11>=0.8 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from uvicorn>=0.30.6->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 2)) (0.16.0)
+Requirement already satisfied: annotated-types>=0.6.0 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from pydantic>=2.10.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 3)) (0.7.0)
+Requirement already satisfied: pydantic-core==2.46.4 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from pydantic>=2.10.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 3)) (2.46.4)
+Requirement already satisfied: colorama in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from click>=7.0->uvicorn>=0.30.6->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 2)) (0.4.6)
+Requirement already satisfied: anyio<5,>=3.6.2 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from starlette>=0.46.0->fastapi>=0.115.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 1)) (4.13.0)
+Requirement already satisfied: idna>=2.8 in C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\Lib\site-packages (from anyio<5,>=3.6.2->starlette>=0.46.0->fastapi>=0.115.0->-r C:\Users\88hon\au-trip-planner\server\requirements.txt (line 1)) (3.16)
+
+Starting server on http://localhost:8000 ...
+Leave this window open. Press Ctrl+C to stop.
+
+$ C:\Users\88hon\AppData\Local\Programs\Python\Python313-arm64\python.exe -m uvicorn server.app:app --host 127.0.0.1 --port 8000
+INFO:     Started server process [17792]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+
+ERROR: server exited with code 1.
+Full log saved to: C:\Users\88hon\au-trip-planner\server\run_log.txt
+Send that file back for a fix.

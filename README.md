@@ -40,8 +40,8 @@ Works standalone with zero setup. Optionally supercharged with the connectors in
 
 | What You Can Do | Standalone | Supercharged With |
 |---|---|---|
-| Research flights | Live web search | Duffel live mode (once you're past sandbox) replaces estimates with real fares |
-| Book a flight | Not available | **Duffel — built.** See setup below. Sandbox by default (fake test bookings, zero risk); switch to a live token when ready to book for real |
+| Research flights | Live web search | **Duffel and/or LiteAPI Flights — both built.** Either replaces estimates with real fares, tagged by source in the output so you can see which is which |
+| Book a flight | Not available | **Duffel — built.** See setup below. Sandbox by default (fake test bookings, zero risk); switch to a live token when ready to book for real. LiteAPI flight booking is not implemented — it currently requires a pre-arranged credit line with them, not something this repo can set up |
 | Research hotels | Live web search | **Nuitee Connect / LiteAPI — search and price-lock built.** See setup below. Real hotel names/prices, not search estimates |
 | Book a hotel | Not available | Not yet — LiteAPI's search/prebook works, but completing a reservation needs their payment step finished on their end first (see CONNECTORS.md) |
 | Research ground transport | Live web search | State transit open data (Phase 1B) — official real-time data for Sydney/Melbourne/Brisbane |
@@ -59,7 +59,7 @@ python scripts/duffel_flights.py search SYD MEL 2026-08-01 2026-08-05 1
 
 A `duffel_test_` token is sandbox mode — safe to experiment with, no real flights or money involved. The skill only ever books on an explicit "book [option]" instruction, whether in test or live mode.
 
-### Setting up LiteAPI (hotel search + price-lock)
+### Setting up LiteAPI (hotels, and optionally flights)
 
 See [CONNECTORS.md](CONNECTORS.md#nuitee-connect--liteapi-phase-2b--setup) for the full walkthrough. Short version:
 
@@ -72,20 +72,27 @@ python scripts/liteapi_hotels.py search Melbourne AU 2026-08-01 2026-08-05 1
 
 Real hotel data, zero cost to search or price-lock (`prebook`). Actually completing a booking isn't wired up yet — see CONNECTORS.md for why.
 
-## Personalization
+The same key also covers flights (`scripts/liteapi_flights.py search SYD MEL 2026-08-01 2026-08-05 1`) — but unlike hotels, LiteAPI flight access is off by default even in sandbox. Request it from the LiteAPI dashboard first (Request Assistance → Flights access) or every call will fail with a 401/403. LiteAPI flight booking isn't implemented here either; it currently needs a pre-arranged credit line with them, a commercial step outside this repo.
 
-Create a `settings.local.json` file next to the `trip-research` skill to personalize (all fields optional):
+## Personalization and travel policy
 
-```json
-{
-  "home_city": "Sydney",
-  "preferred_airline": "Qantas",
-  "frequent_flyer": {
-    "program": "Qantas Frequent Flyer",
-    "number": "1234567"
-  }
-}
+Staff travel profiles live in `settings.local.json` next to the `trip-research` skill, under `travel_policy.staff`. Manage them with `scripts/manage_staff.py` rather than hand-editing the file:
+
+```bash
+python scripts/manage_staff.py add --name "Jane Ngo" --role CEO --tier executive \
+  --home-city Sydney \
+  --ff "Qantas Frequent Flyer:1234567" \
+  --hotel "Accor Live Limitless:8811223"
+
+python scripts/manage_staff.py list
+python scripts/manage_staff.py show "Jane Ngo"
+python scripts/manage_staff.py update --name "Jane Ngo" --tier senior
+python scripts/manage_staff.py remove --name "Jane Ngo"
 ```
+
+Each staff member gets a `tier` — `executive`, `senior`, or `standard` — that drives cabin class, hotel budget cap, ground transport, and scheduling buffers for their trips. The default rules for each tier live in [skills/trip-research/references/travel-policy.default.json](skills/trip-research/references/travel-policy.default.json). Frequent flyer and hotel loyalty numbers are stored per person, purely for record keeping — the skill reads them back and tells you to quote them at booking time, it never submits them anywhere itself (no accounts are touched).
+
+If a traveler isn't listed, or `settings.local.json` doesn't exist at all, the skill defaults to the `standard` tier and says so in its output — it never blocks on missing policy data, but it also never silently guesses at what tier someone should get.
 
 The skill works identically with or without this file — it only ever enhances results, never gates them.
 

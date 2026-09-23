@@ -1,6 +1,11 @@
-<h2 class="sr-only">Form to research a business trip: origin, destination, dates, departure time, travelers, and meeting location</h2>
+<h2 class="sr-only">Form to research a business trip: traveler, origin, destination, dates, departure time, travelers, and meeting location</h2>
 
 <div style="display: flex; flex-direction: column; gap: 14px; max-width: 420px;">
+
+  <div>
+    <label for="ap-traveler" style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">Traveler name or role</label>
+    <input id="ap-traveler" type="text" placeholder="Jane Ngo, or 'the CFO'" style="width: 100%;" />
+  </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
     <div>
@@ -46,7 +51,7 @@
     <input id="ap-meeting" type="text" placeholder="Collins St, CBD" style="width: 100%;" />
   </div>
 
-  <p id="ap-error" style="display: none; font-size: 13px; color: var(--text-danger); margin: 0;">Add an origin, destination, and both dates.</p>
+  <p id="ap-error" style="display: none; font-size: 13px; color: var(--text-danger); margin: 0;">Add a traveler, origin, destination, and both dates.</p>
 
   <button id="ap-submit" style="align-self: flex-start;">Research trip &#8599;</button>
 
@@ -57,6 +62,7 @@
   var errorEl = document.getElementById('ap-error');
 
   submitBtn.addEventListener('click', function () {
+    var traveler = document.getElementById('ap-traveler').value.trim();
     var origin = document.getElementById('ap-origin').value.trim();
     var destination = document.getElementById('ap-destination').value.trim();
     var depart = document.getElementById('ap-depart').value;
@@ -65,7 +71,7 @@
     var travelers = document.getElementById('ap-travelers').value || '1';
     var meeting = document.getElementById('ap-meeting').value.trim();
 
-    if (!origin || !destination || !depart || !ret) {
+    if (!traveler || !origin || !destination || !depart || !ret) {
       errorEl.style.display = 'block';
       return;
     }
@@ -77,7 +83,7 @@
     };
 
     var parts = [];
-    parts.push('Business trip: ' + origin + ' to ' + destination + ', ' + fmt(depart) + ' to ' + fmt(ret) + '.');
+    parts.push('Business trip for ' + traveler + ': ' + origin + ' to ' + destination + ', ' + fmt(depart) + ' to ' + fmt(ret) + '.');
     if (time) parts.push('Prefer a ' + time + ' departure.');
     if (Number(travelers) > 1) parts.push(travelers + ' travelers.');
     if (meeting) parts.push('Meeting location: ' + meeting + '.');

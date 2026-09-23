@@ -1,0 +1,55 @@
+{
+  "travel_policy": {
+    "staff": [
+      {
+        "name": "Jane Ngo",
+        "role": "CEO",
+        "tier": "executive",
+        "home_city": "Sydney",
+        "frequent_flyer": [
+          {
+            "program": "Qantas Frequent Flyer",
+            "number": "3456789"
+          }
+        ],
+        "hotel_loyalty": [
+          {
+            "program": "Accor Live Limitless",
+            "number": "8811223"
+          }
+        ],
+        "notes": "Prefers aisle seat, no red-eyes"
+      },
+      {
+        "name": "Marcus Lee",
+        "role": "CFO",
+        "tier": "executive",
+        "home_city": "Melbourne",
+        "frequent_flyer": [
+          {
+            "program": "Qantas Frequent Flyer",
+            "number": "9988776"
+          }
+        ]
+      },
+      {
+        "name": "Priya Anand",
+        "role": "Sales Director",
+        "tier": "senior",
+        "home_city": "Sydney",
+        "frequent_flyer": [
+          {
+            "program": "Velocity Frequent Flyer",
+            "number": "5544332"
+          }
+        ]
+      },
+      {
+        "name": "Tom Fischer",
+        "role": "Account Manager",
+        "tier": "standard",
+        "home_city": "Brisbane"
+      }
+    ]
+  }
+}

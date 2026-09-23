@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Executive Assistant | AU Trip Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <h1>AU Trip Planner</h1>
+    <div class="nav-links">
+      <button id="nav-trip" class="active" onclick="app.navigate('trip')">Plan Trip</button>
+      <button id="nav-history" onclick="app.navigate('history')">Trip History</button>
+      <button id="nav-profile" onclick="app.navigate('profile')">My Profile</button>
+    </div>
+  </nav>
+
+  <!-- Booking Modal -->
+  <div id="booking-modal" class="hidden" style="position:fixed; inset:0; background:rgba(15,23,42,0.9); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; color:white;">
+    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:2rem; width:450px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+      <h2 style="margin-top:0;">Confirming Itinerary</h2>
+      <div id="booking-status" style="margin: 1.5rem 0; font-family:monospace; line-height:1.5;"></div>
+      <button id="booking-close-btn" class="primary hidden" style="width:100%" onclick="document.getElementById('booking-modal').classList.add('hidden')">Close</button>
+    </div>
+  </div>
+
+  <!-- Address Book Modal -->
+  <div id="address-book-modal" class="hidden" style="position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:2rem; width:500px; max-width:90vw; max-height:80vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+        <h2 style="margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          Select Client Contact
+        </h2>
+        <button type="button" style="background:none; border:none; cursor:pointer; color:var(--text-muted);" onclick="app.closeAddressBook()">✕</button>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <button class="secondary" style="width:100%; justify-content:center; display:flex; align-items:center; gap:8px;" onclick="app.importFromMeeting()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          Extract from Outlook Meeting Invite
+        </button>
+      </div>
+
+      <div style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">HubSpot CRM Contacts</div>
+      <div id="address-book-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+        <!-- Dynamically injected -->
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="main-container">
+
+    <!-- Trip Planner View -->
+    <div id="view-trip">
+      
+      <!-- Calendar Alert Section -->
+      <div id="calendar-section" class="hidden">
+        <div class="calendar-alert" id="calendar-alert-content">
+          <strong>Calendar Assistant:</strong> Checking your schedule...
+        </div>
+      </div>
+
+      <div class="builder-layout">
+        
+        <!-- Search Controls & Results -->
+        <div class="search-area">
+          <div class="panel">
+            <h2>New Business Trip</h2>
+            <div class="row">
+              <div class="form-group">
+                <label>Traveling Executive</label>
+                <select id="trip-executive-select">
+                  <option value="">Guest</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                  <label style="margin-bottom:0;">Client Name (Who you are visiting)</label>
+                  <button type="button" onclick="app.openAddressBook()" style="background:none; border:none; color:var(--accent); font-size:0.8rem; cursor:pointer; padding:0;">📇 CRM / Address Book</button>
+                </div>
+                <input id="client-name" placeholder="e.g. Acme Corp" />
+              </div>
+              <div class="form-group" style="position: relative;">
+                <label>Client Address</label>
+                <input id="client-address" placeholder="e.g. 100 Collins St, Melbourne" oninput="app.searchAddress(this.value)" autocomplete="off" />
+                <div id="address-suggestions" class="suggestions-dropdown hidden"></div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <label>Origin (e.g. SYD)</label>
+                <input id="origin" value="SYD" />
+              </div>
+              <div class="form-group">
+                <label>Destination (e.g. MEL)</label>
+                <input id="destination" value="MEL" />
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="form-group">
+                <label>Depart Date</label>
+                <input id="depart" type="date" />
+              </div>
+              <div class="form-group">
+                <label>Return Date (optional)</label>
+                <input id="returnDate" type="date" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <label>Passengers</label>
+                <input id="passengers" type="number" value="1" min="1" />
+              </div>
+              <div class="form-group">
+                <label>Flight Source</label>
+                <select id="flightSource">
+                  <option value="duffel">Duffel (Default)</option>
+                  <option value="liteapi">LiteAPI</option>
+                </select>
+              </div>
+            </div>
+            
+            <button class="primary" onclick="app.searchTrip()">Search Flights & Hotels</button>
+          </div>
+
+          <!-- Trip Context / Executive Overview -->
+          <div id="trip-context" class="panel hidden" style="margin-bottom: 2rem; background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+              <div style="flex: 1;">
+                <h2 style="margin-bottom: 0.5rem; color: var(--accent);">Planning Trip For: <span id="context-profile-name"></span></h2>
+                <div id="context-schedule" style="margin-bottom: 1rem; font-size: 0.95rem;"></div>
+                <div id="context-logistics" style="font-size: 0.85rem; color: var(--text-muted);">
+                  <strong>Logistics:</strong> <span id="context-distances"></span>
+                </div>
+              </div>
+              <div style="flex: 1; min-width: 300px;">
+                <iframe id="context-map" width="100%" height="200" src="" frameborder="0" style="border:0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"></iframe>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div id="search-loading" class="hidden panel" style="text-align: center;">
+            <p>Searching best options...</p>
+          </div>
+
+          <!-- Flight Results -->
+          <div id="flight-results-container" class="hidden">
+            <div style="margin-bottom: 2rem;">
+              <h2>Outbound Flight Options</h2>
+              <div id="flightResults" class="results-grid"></div>
+            </div>
+            <div id="return-flight-section" class="hidden">
+              <h2>Return Flight Options</h2>
+              <div id="returnFlightResults" class="results-grid"></div>
+            </div>
+          </div>
+
+          <!-- Hotel Results -->
+          <div id="hotel-results-container" class="hidden" style="margin-top: 2rem;">
+            <h2>Hotel Options</h2>
+            <div id="hotelResults" class="results-grid"></div>
+          </div>
+        </div>
+
+        <!-- Itinerary Sidebar -->
+        <div class="sidebar">
+          <div class="panel itinerary-summary">
+            <h2>Itinerary Summary</h2>
+            <div class="summary-item">
+              <div>
+                <strong style="display:block; margin-bottom: 4px;">Flight</strong>
+                <span id="summary-flight-details" style="font-size: 0.875rem; color: var(--text-muted);">None selected</span>
+              </div>
+              <span id="summary-flight-cost" style="font-weight: 500;">$0</span>
+            </div>
+            <div class="summary-item">
+              <div>
+                <strong style="display:block; margin-bottom: 4px;">Hotel</strong>
+                <span id="summary-hotel-details" style="font-size: 0.875rem; color: var(--text-muted);">None selected</span>
+              </div>
+              <span id="summary-hotel-cost" style="font-weight: 500;">$0</span>
+            </div>
+            <div class="summary-total">
+              <span>Total Est.</span>
+              <span id="summary-total-cost">$0</span>
+            </div>
+            <button class="primary" style="width: 100%; margin-top: 1rem;" onclick="app.bookItinerary()">Confirm Selection</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Trip History View -->
+    <div id="view-history" class="hidden">
+      <div class="panel">
+        <h2>Trip History & Receipts</h2>
+        <p style="color:var(--text-muted); margin-bottom:1.5rem;">View and print tax-compliant receipts for past bookings.</p>
+        <div id="history-list" style="display:flex; flex-direction:column; gap:1.5rem;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile View -->
+    <div id="view-profile" class="hidden">
+      <div class="panel">
+        <h2>My Executive Profile</h2>
+        <div class="row">
+          <div class="form-group">
+            <label>Select User</label>
+            <select id="profile-user-select" onchange="app.loadSelectedProfile()">
+              <option value="">Select a user...</option>
+            </select>
+          </div>
+        </div>
+        
+        <div id="profile-details-section" class="hidden">
+          <hr style="border-color: var(--border-color); margin: 2rem 0;" />
+          
+          <div class="row">
+            <div class="form-group">
+              <label>Name</label>
+              <input id="profile-name" disabled />
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <input id="profile-role" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group">
+              <label>Tier</label>
+              <select id="profile-tier">
+                <option value="standard">Standard</option>
+                <option value="senior">Senior</option>
+                <option value="executive">Executive</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Home City</label>
+              <input id="profile-home" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group">
+              <label>Email Address</label>
+              <input id="profile-email" type="email" placeholder="e.g. executive@example.com" />
+            </div>
+            <div class="form-group">
+              <label>Phone Number (E.164 format)</label>
+              <input id="profile-phone" type="tel" placeholder="e.g. +442080162590" />
+            </div>
+          </div>
+
+          <!-- Frequent Flyer & Hotel Loyalty Programs -->
+          <div class="row">
+            <div class="form-group">
+              <label>Frequent Flyer Programs</label>
+              <div id="profile-ff-list" class="loyalty-list"></div>
+              <button class="secondary" onclick="app.addLoyaltyRow('ff')">+ Add Frequent Flyer</button>
+            </div>
+            
+            <div class="form-group">
+              <label>Hotel Loyalty Programs</label>
+              <div id="profile-hotel-list" class="loyalty-list"></div>
+              <button class="secondary" onclick="app.addLoyaltyRow('hotel')">+ Add Hotel Loyalty</button>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 1rem;">
+            <div class="form-group">
+              <label>Special Requests / Notes</label>
+              <input id="profile-notes" placeholder="e.g. aisle seat only" />
+            </div>
+          </div>
+
+          <button class="primary" onclick="app.saveProfile()">Save Profile Updates</button>
+          <div id="profile-msg" style="margin-top: 1rem; font-size: 0.875rem;"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js?v=2"></script>
+</body>
+</html>

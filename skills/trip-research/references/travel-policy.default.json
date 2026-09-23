@@ -1,0 +1,35 @@
+{
+  "default_tier": "standard",
+  "tiers": {
+    "executive": {
+      "label": "Executive / C-suite",
+      "cabin_class": "business",
+      "cabin_class_min_duration_hours": 0,
+      "hotel_nightly_cap_aud": 600,
+      "ground_transport": "car_service",
+      "meeting_buffer_minutes": 120,
+      "avoid_redeye_before_travel_day": true,
+      "avoid_early_departure_after_late_arrival": true
+    },
+    "senior": {
+      "label": "Senior staff / director",
+      "cabin_class": "premium_economy",
+      "cabin_class_min_duration_hours": 3,
+      "hotel_nightly_cap_aud": 400,
+      "ground_transport": "rideshare",
+      "meeting_buffer_minutes": 90,
+      "avoid_redeye_before_travel_day": false,
+      "avoid_early_departure_after_late_arrival": true
+    },
+    "standard": {
+      "label": "Standard staff",
+      "cabin_class": "economy",
+      "cabin_class_min_duration_hours": null,
+      "hotel_nightly_cap_aud": 250,
+      "ground_transport": "public_transit_or_rideshare",
+      "meeting_buffer_minutes": 60,
+      "avoid_redeye_before_travel_day": false,
+      "avoid_early_departure_after_late_arrival": false
+    }
+  }
+}

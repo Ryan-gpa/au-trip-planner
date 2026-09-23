@@ -79,9 +79,17 @@ def search_offers(origin, destination, depart_date, return_date=None, passengers
     parsed = []
     for o in offers[:10]:
         slices_out = o.get("slices", [])
+        
+        # Outbound
         first_slice = slices_out[0] if slices_out else {}
         segments = first_slice.get("segments", [])
         first_seg = segments[0] if segments else {}
+        
+        # Inbound (Return)
+        second_slice = slices_out[1] if len(slices_out) > 1 else {}
+        ret_segments = second_slice.get("segments", [])
+        ret_first_seg = ret_segments[0] if ret_segments else {}
+
         parsed.append({
             "offer_id": o["id"],
             "airline": first_seg.get("marketing_carrier", {}).get("name"),
@@ -89,6 +97,8 @@ def search_offers(origin, destination, depart_date, return_date=None, passengers
             "total_currency": o.get("total_currency"),
             "departing_at": first_seg.get("departing_at"),
             "arriving_at": first_seg.get("arriving_at"),
+            "return_departing_at": ret_first_seg.get("departing_at"),
+            "return_arriving_at": ret_first_seg.get("arriving_at"),
             "expires_at": o.get("expires_at"),
         })
     return parsed
